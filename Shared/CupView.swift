@@ -108,6 +108,11 @@ struct CupView: View {
                     .ignoresSafeArea(.all) // As background.
                 GeometryReader { geometry in
                     @State var cupWidth = geometry.size.width * 0.8
+                    // 1 L bottle dimensions. The body is a Capsule whose fill
+                    // maps 1:1 to drinkNum / cupCapacity (1000ml), so 500ml is
+                    // exactly half full.
+                    let bottleWidth = geometry.size.width * 0.40
+                    let bottleBodyHeight = geometry.size.height * 0.42
                     VStack{
                         Spacer()
 #if !os(watchOS)
@@ -132,45 +137,55 @@ struct CupView: View {
                         .padding(.bottom)
 #endif
                         HStack{
-                            
+
                             Spacer()
-                            ZStack{
-                                
-                                Cup()
+                            VStack(spacing: geometry.size.height * 0.008) {
+                                // Bottle cap.
+                                RoundedRectangle(cornerRadius: bottleWidth * 0.10)
                                     .fill(Color.white)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: cupWidth, alignment: .center)
                                     .overlay(
-                                        WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
-                                            .frame(width: cupWidth, alignment: .center)
-                                            .aspectRatio( contentMode: .fill)
-                                            .mask(
-                                                Cup()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: cupWidth, alignment: .center)
-                                            )
-                                    )
-                                
-                                
-                                Cup()
+                                        RoundedRectangle(cornerRadius: bottleWidth * 0.10)
 #if !os(watchOS)
-                                    .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
+                                            .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
 #else
-                                    .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
+                                            .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
 #endif
-                                
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: cupWidth, alignment: .center)
-                                    .overlay(
-                                        InvisibleSlider()
                                     )
-                                
+                                    .frame(width: bottleWidth * 0.42, height: geometry.size.height * 0.028)
+
+                                // Bottle body. The Capsule is filled directly by
+                                // the wave, so the liquid level is accurate.
+                                ZStack{
+                                    Capsule()
+                                        .fill(Color.white)
+                                        .overlay(
+                                            WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
+                                                .mask(Capsule())
+                                        )
+
+                                    Capsule()
+#if !os(watchOS)
+                                        .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
+#else
+                                        .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
+#endif
+                                        .overlay(
+                                            InvisibleSlider()
+                                        )
+                                }
+                                .frame(width: bottleWidth, height: bottleBodyHeight)
                             }
                             Spacer()
                         }
                         
                         Spacer()
                         
+#if os(iOS)
+                        // Pick the drink type from a scrollable row of icons.
+                        DrinkTypeIconRow(selectedDrinkType: $selectedDrinkType)
+                            .padding(.bottom, 4)
+#endif
+
                         HStack{
                             Button{
                                 Task {
@@ -230,7 +245,9 @@ struct CupView: View {
                             .scaleEffect(isDrinkButtonExpanded ? 2.5 : 1)
                             .animation(Animation.easeOut(duration: 0.3), value: self.isDrinkButtonExpanded)
 
+#if os(watchOS)
                             DrinkTypePickerButton(selectedDrinkType: $selectedDrinkType)
+#endif
 
                             Spacer()
 
@@ -331,6 +348,60 @@ struct CupView: View {
         .accentColor(.black)
     }
 }
+
+#if os(iOS)
+struct DrinkTypeIconRow: View {
+    /* Horizontal, scrollable row of circular drink-type icons (HidrateSpark
+     * style): symbol on the drink's colour, white ring on the selected one,
+     * name underneath. Scrolls to the current selection on appear. Replaces
+     * the old text menu on iOS. */
+
+    @Binding var selectedDrinkType: DrinkType
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    ForEach(DrinkType.allCases) { drink in
+                        Button {
+                            self.selectedDrinkType = drink
+                            LastDrinkTypeStore.set(drink)
+                        } label: {
+                            VStack(spacing: 4) {
+                                ZStack {
+                                    Circle()
+                                        .fill(drink.waveColor)
+                                    Image(systemName: drink.symbolName)
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 22))
+                                        .shadow(color: .black.opacity(0.25), radius: 1)
+                                }
+                                .frame(width: 52, height: 52)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: drink == selectedDrinkType ? 3 : 0)
+                                )
+                                Text(drink.displayName)
+                                    .font(.caption2)
+                                    .foregroundStyle(.black)
+                                    .lineLimit(1)
+                            }
+                            .frame(width: 66)
+                            .opacity(drink == selectedDrinkType ? 1.0 : 0.6)
+                        }
+                        .buttonStyle(.plain)
+                        .id(drink)
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .onAppear {
+                proxy.scrollTo(selectedDrinkType, anchor: .center)
+            }
+        }
+    }
+}
+#endif
 
 struct DrinkTypePickerButton: View {
     /* Sparing extraction from CupView's bottom HStack (see the FIXME above).
