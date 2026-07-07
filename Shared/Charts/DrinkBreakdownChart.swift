@@ -67,6 +67,14 @@ struct DrinkBreakdownChart: View {
 
                         Text(curDrinkMetric.type.displayName)
 
+                        // Hydration factor badge (Beverage Hydration Index);
+                        // the counted volume stays capped at the poured
+                        // volume, so the rows always sum to the ring total.
+                        if curDrinkMetric.type.factor != 1.0 {
+                            Text(String(format: "×%.2f", curDrinkMetric.type.factor))
+                                .foregroundStyle(.secondary)
+                        }
+
                         Spacer()
 
                         // Show "poured -> counted" only when the hydration
