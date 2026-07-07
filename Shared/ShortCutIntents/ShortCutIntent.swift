@@ -24,9 +24,7 @@ struct ShortCutIntent: AppIntent {
         let context = ModelContext(container)
         config.receiveUpdatedWaterTrackerConfig(modelContext: context)
         
-        Task{
-            await healthKitManager.saveDrinkWater(drink_num: self.drinkNum, waterUnitInput: config.getUnit())
-        }
+        _ = await healthKitManager.saveDrinkWater(drink_num: self.drinkNum, waterUnitInput: config.getUnit())
         
         var res_str:String.LocalizationValue = ""
         if config.getUnit() == .ml {
