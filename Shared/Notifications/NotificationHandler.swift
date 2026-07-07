@@ -9,7 +9,7 @@ import UserNotifications
 import WatchConnectivity
 import WidgetKit
 import Foundation
-import SwiftUICore
+import SwiftUI
 import SwiftData
 
 final class CrossOsConnectivity: NSObject, ObservableObject {
