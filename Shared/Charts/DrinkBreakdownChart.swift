@@ -19,10 +19,14 @@ struct DrinkBreakdownChart: View {
     @State var config: WaterTrackerConfigManager
 
     func volumeStr(_ volumeML: Double) -> String {
+        // volumeStrPair keeps this card consistent with the summary
+        // sentence: ml amounts >= 1000 read as liters ("1.25L").
         if config.waterUnit == .ml {
-            return String(format: "%d", Int(volumeML)) + config.getUnitStr()
+            let volumePair = WaterUnits.ml.volumeStrPair(volumeML)
+            return volumePair.numStr + volumePair.unitStr
         } else {
-            return String(format: "%.1f", volumeML / mlPerUSFluidOunce) + config.getUnitStr()
+            let volumePair = WaterUnits.oz.volumeStrPair(volumeML / mlPerUSFluidOunce)
+            return volumePair.numStr + volumePair.unitStr
         }
     }
 
