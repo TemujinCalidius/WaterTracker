@@ -190,8 +190,13 @@ class HealthKitManager {
             if waterUnitInput == .ml {
                 waterUnit = HKUnit.liter()
             }
-            let totalDrinkWaterTodayLiter = sum?.doubleValue(for: waterUnit)
-            var totalDrinkWaterTodayML = totalDrinkWaterTodayLiter!
+            guard let totalDrinkWaterTodayLiter = sum?.doubleValue(for: waterUnit) else {
+                DispatchQueue.main.async{
+                    self.todayTotalDrinkNum = 0.0
+                }
+                return
+            }
+            var totalDrinkWaterTodayML = totalDrinkWaterTodayLiter
             
             if waterUnitInput == .ml {
                 totalDrinkWaterTodayML *= 1000
