@@ -9,23 +9,27 @@
 import SwiftUI
 
 struct WaveAnimation: View {
-    
+
     @Binding var waveOffset: Angle
     var isCup: Bool
-    
-    init(_ waveOffset: Binding<Angle>, _ isCup: Bool) {
+    // Tint of the liquid; defaults to the classic water blue so every
+    // existing call site renders unchanged.
+    var fillColor: Color
+
+    init(_ waveOffset: Binding<Angle>, _ isCup: Bool, fillColor: Color = .blue) {
         self._waveOffset = waveOffset
         self.isCup = isCup
+        self.fillColor = fillColor
     }
-    
+
     var body: some View {
         ZStack{
             // FIXME:: Better implementation? Merge them together?
             // We here split the two wave animations to two structs, to avoid strange animation glitches.
             if isCup {
-                WaveWithCupHeight(waveOffset: $waveOffset, isCup: isCup)
+                WaveWithCupHeight(waveOffset: $waveOffset, isCup: isCup, fillColor: fillColor)
             } else {
-                WaveWithBodyHeight(waveOffset: $waveOffset, isCup: isCup)
+                WaveWithBodyHeight(waveOffset: $waveOffset, isCup: isCup, fillColor: fillColor)
             }
         }
     }
@@ -35,14 +39,16 @@ struct WaveWithCupHeight: View {
     @Environment(HealthKitManager.self) private var healthKitManager
     @Environment(WaterTrackerConfigManager.self) private var config
     @Binding var waveOffset: Angle
-    
+
     @State var drinkNum: Double = 0.0
-    
+
     var isCup: Bool
-    
+
+    var fillColor: Color = .blue
+
     // Use for animation and default value scaling.
     @State var cupCapacity: Double = 1000.0
-    
+
     var body : some View {
         GeometryReader { geometry in
             ZStack {
@@ -50,19 +56,19 @@ struct WaveWithCupHeight: View {
                 // This is only presented in iPhone.
                 if UIDevice.current.userInterfaceIdiom == .phone {
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 270))
-                        .fill(Color.blue.gradient)
+                        .fill(fillColor.gradient)
                         .opacity(0.3)
                         .animation(.linear(duration: 2.3).repeatForever(autoreverses: false), value: waveOffset)
-                    
+
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 90))
-                        .fill(Color.blue.gradient)
+                        .fill(fillColor.gradient)
                         .opacity(0.4)
                         .animation(.linear(duration: 1.8).repeatForever(autoreverses: false), value: waveOffset)
                 }
                 #endif
-                
+
                 Wave(offSet: Angle(degrees: waveOffset.degrees))
-                    .fill(Color.blue.gradient)
+                    .fill(fillColor.gradient)
                     .onAppear {
                         waveOffset = waveOffset + Angle(degrees: 360)
                     }
@@ -86,6 +92,8 @@ struct WaveWithBodyHeight: View {
 
     var isCup: Bool // TODO:: FIXME:: Better implementation?
 
+    var fillColor: Color = .blue
+
     // Use for animation and default value scaling.
     @State var cupCapacity: Double = 1000.0
 
@@ -98,19 +106,19 @@ struct WaveWithBodyHeight: View {
                 // May reopen when this specific device goes out-of-support.
                 if UIDevice.current.userInterfaceIdiom != .pad {
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 270))
-                        .fill(Color.blue.gradient)
+                        .fill(fillColor.gradient)
                         .opacity(0.3)
                         .animation(.linear(duration: 2.3).repeatForever(autoreverses: false), value: waveOffset)
-                    
+
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 90))
-                        .fill(Color.blue.gradient)
+                        .fill(fillColor.gradient)
                         .opacity(0.4)
                         .animation(.linear(duration: 1.8).repeatForever(autoreverses: false), value: waveOffset)
                 }
                 #endif
 
                 Wave(offSet: Angle(degrees: waveOffset.degrees))
-                    .fill(Color.blue.gradient)
+                    .fill(fillColor.gradient)
                     .onAppear {
                         waveOffset = waveOffset + Angle(degrees: 360)
                     }

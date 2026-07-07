@@ -41,6 +41,48 @@
         }
       }
     },
+    "[2] Non-water drinks are saved to Apple Health as their effective hydration volume (volume × hydration factor, capped at the poured volume). Factors follow the Beverage Hydration Index (Maughan et al., 2016, Am J Clin Nutr)." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[2] 非水饮品按其有效补水量（容量×水合系数，上限为实际饮用量）保存到 Apple Health。系数遵循饮料水合指数（Maughan 等，2016，Am J Clin Nutr）。"
+          }
+        }
+      }
+    },
+    "%@ + " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ + "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@+"
+          }
+        }
+      }
+    },
+    "%@ counts as %@ of its volume toward your daily goal, based on how well it hydrates (Maughan et al. 2016)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ counts as %2$@ of its volume toward your daily goal, based on how well it hydrates (Maughan et al. 2016)."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@按其容量的%2$@计入每日目标，基于其补水效果（Maughan 等，2016）。"
+          }
+        }
+      }
+    },
     "%@%@" : {
       "localizations" : {
         "en" : {
@@ -143,6 +185,16 @@
         }
       }
     },
+    "Broth / Soup" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肉汤 / 汤"
+          }
+        }
+      }
+    },
     "Choose Unit: " : {
       "localizations" : {
         "zh-Hans" : {
@@ -159,6 +211,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择喝水概要视图"
+          }
+        }
+      }
+    },
+    "Coconut Water" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "椰子水"
+          }
+        }
+      }
+    },
+    "Coffee" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "咖啡"
+          }
+        }
+      }
+    },
+    "Cold Drinks" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冷饮"
           }
         }
       }
@@ -189,6 +271,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每天喝水目标："
+          }
+        }
+      }
+    },
+    "Dairy" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "乳制品"
           }
         }
       }
@@ -229,6 +321,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一天喝水追踪"
+          }
+        }
+      }
+    },
+    "Diet Soda" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无糖汽水"
           }
         }
       }
@@ -275,12 +377,42 @@
         }
       }
     },
+    "Drink Type" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "饮品类型"
+          }
+        }
+      }
+    },
     "Empty Data\nPlease open the app again to \nrefresh the chart" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "无数据\n请打开应用来 \n刷新数据"
+          }
+        }
+      }
+    },
+    "Energy Drink" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "能量饮料"
+          }
+        }
+      }
+    },
+    "Espresso" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浓缩咖啡"
           }
         }
       }
@@ -295,12 +427,72 @@
         }
       }
     },
+    "Fruit Juice" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "果汁"
+          }
+        }
+      }
+    },
+    "Herbal Tea" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "花草茶"
+          }
+        }
+      }
+    },
+    "Hot Chocolate" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热巧克力"
+          }
+        }
+      }
+    },
+    "Hot Drinks" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热饮"
+          }
+        }
+      }
+    },
     "Hour" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "小时"
+          }
+        }
+      }
+    },
+    "Hydration factor applied" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已应用水合系数"
+          }
+        }
+      }
+    },
+    "Kombucha" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "康普茶"
           }
         }
       }
@@ -367,6 +559,16 @@
         }
       }
     },
+    "Plant Milk" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "植物奶"
+          }
+        }
+      }
+    },
     "Pocket Water Tracker" : {
       "localizations" : {
         "zh-Hans" : {
@@ -397,6 +599,26 @@
         }
       }
     },
+    "Protein Shake" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蛋白奶昔"
+          }
+        }
+      }
+    },
+    "Rehydration Solution" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "口服补液盐"
+          }
+        }
+      }
+    },
     "Reminder Time Interval: " : {
       "localizations" : {
         "zh-Hans" : {
@@ -413,6 +635,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "数据通过苹果健康保存和同步"
+          }
+        }
+      }
+    },
+    "Serving Size" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "份量"
           }
         }
       }
@@ -457,6 +689,66 @@
         }
       }
     },
+    "Skim Milk" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脱脂牛奶"
+          }
+        }
+      }
+    },
+    "Smoothie" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "果昔"
+          }
+        }
+      }
+    },
+    "Soda" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "汽水"
+          }
+        }
+      }
+    },
+    "Sparkling Water" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "气泡水"
+          }
+        }
+      }
+    },
+    "Sports Drink" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运动饮料"
+          }
+        }
+      }
+    },
+    "Tea" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "茶"
+          }
+        }
+      }
+    },
     "Time to drink water!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -479,6 +771,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天你喝了%1$@%2$@的水，目标是%3$@%4$@, 还剩下%5$@%6$@"
+          }
+        }
+      }
+    },
+    "Today's Drinks" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日饮品"
+          }
+        }
+      }
+    },
+    "Water" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水"
           }
         }
       }
@@ -529,6 +841,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "周喝水追踪"
+          }
+        }
+      }
+    },
+    "What you drank, and what it counts for" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你喝了什么，以及计入多少"
+          }
+        }
+      }
+    },
+    "Whole Milk" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全脂牛奶"
           }
         }
       }
