@@ -38,37 +38,21 @@ struct WaterTracker_Accessory_WidgetEntryView : View {
                 .rotationEffect(.degrees(180))
             case .accessoryInline:
                 HStack {
-                    let waterUnitStr = entry.waterConfigMgr.waterUnit == .ml ? "ml" : "oz"
-                    if entry.waterConfigMgr.waterUnit == .ml {
-                        let drinkNumStr = String(format: "%d", Int(entry.todayTotalDrinkNum))
-                        let leftNumStr = String(format: "%d", max(0, Int(entry.dailyGoal - entry.todayTotalDrinkNum)))
-                        Text(LocalizedStringKey("Drink \(drinkNumStr)\(waterUnitStr), \(leftNumStr)\(waterUnitStr) to go"))
-                    } else {
-                        let drinkNumStr = String(format: "%.1f", entry.todayTotalDrinkNum)
-                        let leftNumStr = String(format: "%.1f", max(0.0, entry.dailyGoal - entry.todayTotalDrinkNum))
-                        Text(LocalizedStringKey("Drink \(drinkNumStr)\(waterUnitStr), \(leftNumStr)\(waterUnitStr) to go"))
-                    }
+                    let drinkNumPair = entry.waterConfigMgr.waterUnit.volumeStrPair(entry.todayTotalDrinkNum)
+                    let leftNumPair = entry.waterConfigMgr.waterUnit.volumeStrPair(max(0.0, entry.dailyGoal - entry.todayTotalDrinkNum))
+                    Text(LocalizedStringKey("Drink \(drinkNumPair.numStr)\(drinkNumPair.unitStr), \(leftNumPair.numStr)\(leftNumPair.unitStr) to go"))
                 }
             case .accessoryRectangular:
                 ZStack {
-                    let waterUnitStr = entry.waterConfigMgr.waterUnit == .ml ? "ml" : "oz"
+                    let drinkNumPair = entry.waterConfigMgr.waterUnit.volumeStrPair(entry.todayTotalDrinkNum)
+                    let leftNumPair = entry.waterConfigMgr.waterUnit.volumeStrPair(max(0.0, entry.dailyGoal - entry.todayTotalDrinkNum))
                     VStack(alignment: .leading) {
                       Text("Pocket Water Tracker")
                         .font(.headline)
                         .widgetAccentable()
                         
-                        if entry.waterConfigMgr.waterUnit == .ml {
-                            let drinkNumStr = String(format: "%d", Int(entry.todayTotalDrinkNum))
-                            let leftNumStr = String(format: "%d", max(0, Int(entry.dailyGoal - entry.todayTotalDrinkNum)))
-                            Text(LocalizedStringKey("Drink \(drinkNumStr)\(waterUnitStr)"))
-                            Text(LocalizedStringKey("\(leftNumStr)\(waterUnitStr) to go"))
-                        } else {
-                            // .oz
-                            let drinkNumStr = String(format: "%.1f", entry.todayTotalDrinkNum)
-                            let leftNumStr = String(format: "%.1f", max(0.0, entry.dailyGoal - entry.todayTotalDrinkNum))
-                            Text(LocalizedStringKey("Drink \(drinkNumStr)\(waterUnitStr)"))
-                            Text(LocalizedStringKey("\(leftNumStr)\(waterUnitStr) to go"))
-                        }
+                        Text(LocalizedStringKey("Drink \(drinkNumPair.numStr)\(drinkNumPair.unitStr)"))
+                        Text(LocalizedStringKey("\(leftNumPair.numStr)\(leftNumPair.unitStr) to go"))
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }
             default:

@@ -51,8 +51,9 @@ struct UnitPickerView: View {
             
             Picker("", selection: self.$dailyGoal) {
                 ForEach(self.dailyGoalChoice, id: \.self) {
-                    let unitStr = self.config.waterUnit == .ml ? "ml" : "oz"
-                    Text(String("\($0) \(unitStr)"))
+                    // ml goals are all >= 1000, so the wheel reads "1.5 L" ... "3.6 L" uniformly.
+                    let goalPair = self.config.waterUnit.volumeStrPair($0)
+                    Text(String("\(goalPair.numStr) \(goalPair.unitStr)"))
                 }
             }
 #if os(iOS)

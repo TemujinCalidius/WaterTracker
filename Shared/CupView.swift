@@ -40,14 +40,9 @@ struct CupView: View {
     }
     
     func updateTextStr() {
-        self.unitStr = config.getUnitStr()
-        if config.waterUnit == .ml {
-            let drinkNumStr = String(format: "%.3d", Int(self.healthKitManager.drinkNum))
-            self.textStr = LocalizedStringKey("\(drinkNumStr)\(self.unitStr)")
-        } else {
-            let drinkNumStr = String(format: "%.1f", self.healthKitManager.drinkNum)
-            self.textStr = LocalizedStringKey("\(drinkNumStr)\(self.unitStr)")
-        }
+        let drinkNumPair = config.waterUnit.volumeStrPair(self.healthKitManager.drinkNum, isPadded: true)
+        self.unitStr = drinkNumPair.unitStr
+        self.textStr = LocalizedStringKey("\(drinkNumPair.numStr)\(drinkNumPair.unitStr)")
     }
     
     var body : some View {
