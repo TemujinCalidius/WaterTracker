@@ -49,12 +49,16 @@ struct WaveWithCupHeight: View {
     // Use for animation and default value scaling.
     @State var cupCapacity: Double = 1000.0
 
-    // The fill level jumps around while the config loads on launch; snap to the
-    // resting level first, then animate only the user's own adjustments.
-    @State private var enableFillAnimation: Bool = false
-
     var body : some View {
         GeometryReader { geometry in
+            // The three layered Wave shapes give the surface its shape. They are
+            // deliberately STATIC: the maintainer's continuous .repeatForever
+            // ripple (his "animation glitches" FIXME) created an always-running
+            // animation transaction that leaked into the fill offset below,
+            // sloshing the whole water level up and down while the view settled
+            // on launch. Dropping the ripple makes the level rock-solid; the
+            // fill still animates smoothly on deliberate changes (withAnimation
+            // at the call site).
             ZStack {
                 #if !os(watchOS)
                 // This is only presented in iPhone.
@@ -62,35 +66,22 @@ struct WaveWithCupHeight: View {
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 270))
                         .fill(fillColor.gradient)
                         .opacity(0.3)
-                        .animation(.linear(duration: 2.3).repeatForever(autoreverses: false), value: waveOffset)
 
                     Wave(offSet: Angle(degrees: waveOffset.degrees + 90))
                         .fill(fillColor.gradient)
                         .opacity(0.4)
-                        .animation(.linear(duration: 1.8).repeatForever(autoreverses: false), value: waveOffset)
                 }
                 #endif
 
                 Wave(offSet: Angle(degrees: waveOffset.degrees))
                     .fill(fillColor.gradient)
-                    .onAppear {
-                        waveOffset = waveOffset + Angle(degrees: 360)
-                    }
-                    .animation(.linear(duration: 1.7).repeatForever(autoreverses: false), value: waveOffset)
             }
-            .animation(enableFillAnimation ? .linear(duration: 0.3) : nil, value: self.healthKitManager.drinkNum)
             // Clamp the fill fraction so a transient drinkNum > cupCapacity
             // (e.g. before the config finishes loading) can't push the wave
             // above the cup and make the liquid appear to pour in from the top.
             // WaveWithBodyHeight already clamps its offset the same way.
             .offset(x:0, y: geometry.size.height * (1.0 - min(1.0, max(0.0, self.healthKitManager.drinkNum / self.config.cupCapacity))))
             .frame(width: geometry.size.width, height: geometry.size.height)
-            .onAppear {
-                // Let the launch fill settle instantly, then animate later changes.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    enableFillAnimation = true
-                }
-            }
         }
 
     }

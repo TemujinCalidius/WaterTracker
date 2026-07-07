@@ -74,7 +74,12 @@ struct CupView: View {
     }
 
     func setDrinkNum(_ amount: Double) {
-        self.healthKitManager.drinkNum = min(maxLogAmount, max(config.cupMinimumNum, amount))
+        // Animate deliberate amount changes (presets, typed entry) so the water
+        // fills smoothly. The launch default and the cup drag set drinkNum
+        // directly (no animation), which keeps the launch glitch away.
+        withAnimation(.linear(duration: 0.3)) {
+            self.healthKitManager.drinkNum = min(maxLogAmount, max(config.cupMinimumNum, amount))
+        }
     }
 
     func commitAmountEntry() {
@@ -83,7 +88,8 @@ struct CupView: View {
     }
     
     func setDefaultDrinkNum() {
-        self.healthKitManager.drinkNum = Double(Int(config.getCupCapacity() * 3 / 4))
+        // A standard single serving.
+        self.healthKitManager.drinkNum = config.waterUnit == .ml ? 250.0 : 8.0
     }
     
     func updateTextStr() {
