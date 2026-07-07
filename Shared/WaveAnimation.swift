@@ -75,7 +75,11 @@ struct WaveWithCupHeight: View {
                     .animation(.linear(duration: 1.7).repeatForever(autoreverses: false), value: waveOffset)
             }
             .animation(.linear(duration: 0.3), value: self.healthKitManager.drinkNum)
-            .offset(x:0, y: geometry.size.height * (1.0 - self.healthKitManager.drinkNum / self.config.cupCapacity))
+            // Clamp the fill fraction so a transient drinkNum > cupCapacity
+            // (e.g. before the config finishes loading) can't push the wave
+            // above the cup and make the liquid appear to pour in from the top.
+            // WaveWithBodyHeight already clamps its offset the same way.
+            .offset(x:0, y: geometry.size.height * (1.0 - min(1.0, max(0.0, self.healthKitManager.drinkNum / self.config.cupCapacity))))
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
         
