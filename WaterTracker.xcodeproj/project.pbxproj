@@ -82,12 +82,14 @@
 		29E22C572CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
 		29E22C582CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
 		29E22C592CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
+		4EA6BE8C1E86A1C99A2FD1E6 /* DrinkBreakdownChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D545573FCC4248A2C7167A /* DrinkBreakdownChart.swift */; };
 		5572EE14BC8A13350CBFC937 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		5FABF8365BE1E89A24EBA18D /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		74724A548984E25176D442B9 /* DateHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41493EC7E31F286D0D8BFD63 /* DateHandlingTests.swift */; };
 		75B080FCD2227670EE53E5D6 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		835830810DBF8EE0895CABB0 /* DrinkCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8FD8815B6CA5CB743DC0CD /* DrinkCatalogTests.swift */; };
 		84B941DF3B87347A6E6EA766 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
+		985A94CD5A5037D716F93C02 /* DrinkBreakdownChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73D545573FCC4248A2C7167A /* DrinkBreakdownChart.swift */; };
 		A62BF03E8894FEED1FB409C9 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		A7A168E6070D0E594EF098C0 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A489A82CD2B9D2005AA4A1 /* Units.swift */; };
 		C0EB13DDCC48BADF93BCC1EB /* DateHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964344E2CD9D6A4008429BC /* DateHandling.swift */; };
@@ -189,6 +191,7 @@
 		41493EC7E31F286D0D8BFD63 /* DateHandlingTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DateHandlingTests.swift; sourceTree = "<group>"; };
 		4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCatalog.swift; sourceTree = "<group>"; };
 		6281E8B9AA11FDB96FCD84D7 /* UnitsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UnitsTests.swift; sourceTree = "<group>"; };
+		73D545573FCC4248A2C7167A /* DrinkBreakdownChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkBreakdownChart.swift; sourceTree = "<group>"; };
 		8F8FD8815B6CA5CB743DC0CD /* DrinkCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCatalogTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -388,6 +391,7 @@
 			children = (
 				29C2FF262CD9AEF9008A4EC7 /* CircularProgress.swift */,
 				29D17B142CD43B3B0049B75C /* BarChart.swift */,
+				73D545573FCC4248A2C7167A /* DrinkBreakdownChart.swift */,
 			);
 			path = Charts;
 			sourceTree = "<group>";
@@ -688,6 +692,7 @@
 				293257762D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29D17B192CD446970049B75C /* UnitPicker.swift in Sources */,
 				5572EE14BC8A13350CBFC937 /* DrinkCatalog.swift in Sources */,
+				985A94CD5A5037D716F93C02 /* DrinkBreakdownChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +718,7 @@
 				293257742D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29D17B182CD446970049B75C /* UnitPicker.swift in Sources */,
 				75B080FCD2227670EE53E5D6 /* DrinkCatalog.swift in Sources */,
+				4EA6BE8C1E86A1C99A2FD1E6 /* DrinkBreakdownChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -76,6 +76,7 @@ struct SummaryView: View {
         }
         _ = await self.healthKitManager.updateDrinkWaterOneDay(waterUnitInput: self.config.waterUnit)
         _ = await self.healthKitManager.updateDrinkWaterWeek(waterUnitInput: self.config.waterUnit)
+        _ = await self.healthKitManager.updateDrinkBreakdownToday()
         updateTextStr()
         DispatchQueue.main.async{
             self.CircularBarUpdateToggle.toggle()
@@ -145,6 +146,14 @@ struct SummaryView: View {
                                     await self.healthKitManager.updateDrinkWaterOneDay(waterUnitInput: self.config.waterUnit)
                                 }
                             }
+
+                        DrinkBreakdownChart(breakdownData: self.healthKitManager.todayBreakdownData, config: self.config)
+                            .padding()
+                            .onAppear() {
+                                Task{
+                                    await self.healthKitManager.updateDrinkBreakdownToday()
+                                }
+                            }
                         
                         WaterTracingBarChart(chartData: self.healthKitManager.drinkWeekData, dateComponents: .day, mainTitle: LocalizedStringKey("Week View"), subTitle: LocalizedStringKey("Showing last 7 days data"), config: self.config)
                             .padding()
@@ -186,6 +195,12 @@ struct SummaryView: View {
                             .tint(.black)
                             .padding(.horizontal)
                             .allowsHitTesting(false)
+                        Text("[2] Non-water drinks are saved to Apple Health as their effective hydration volume (volume × hydration factor, capped at the poured volume). Factors follow the Beverage Hydration Index (Maughan et al., 2016, Am J Clin Nutr).")
+                            .font(.system(size: 8))
+                            .foregroundStyle(.black)
+                            .tint(.black)
+                            .padding(.horizontal)
+                            .allowsHitTesting(false)
                         Text("[*] This application is open source at the following link: https://github.com/SteveLeungYL/WaterTracker. If you find it useful, please consider giving it a star! ❤️")
                             .font(.system(size: 8))
                             .foregroundStyle(.black)
@@ -214,6 +229,11 @@ struct SummaryView: View {
                 .onChange(of: healthKitManager.todayTotalDrinkNum) {
                     // Reloading text.
                     updateTextStr()
+                    // Keep the breakdown card in step (iPad shows this view
+                    // side-by-side with the cup, so it can't rely on onAppear).
+                    Task{
+                        await self.healthKitManager.updateDrinkBreakdownToday()
+                    }
                 }
                 .onChange(of: self.updateToggle) {
                     Task{
