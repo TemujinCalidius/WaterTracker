@@ -1,2 +1,4 @@
 .DS_Store
 WaterTracker.xcodeproj/project.xcworkspace/xcuserdata/yuliang.xcuserdatad/UserInterfaceState.xcuserstate
+xcuserdata/
+*.xcuserstate
