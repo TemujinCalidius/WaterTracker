@@ -35,25 +35,15 @@ struct SummaryView: View {
     
     func updateTextStr() {
         self.unitStr = config.getUnitStr()
-        if config.waterUnit == .ml {
-            let drinkNumStr = String(format: "%d", Int(self.healthKitManager.todayTotalDrinkNum))
-            let suggestedNumStr = String(format: "%d", Int(self.config.getDailyGoal()))
-            let leftNumStr = String(format: "%d", Int(max(0, Int(self.config.getDailyGoal() - self.healthKitManager.todayTotalDrinkNum))))
-            
-            // Always use main thread to update UI.
-            DispatchQueue.main.async{
-                self.textStr = LocalizedStringKey("Today you drink \(drinkNumStr)\(self.unitStr) out of the goal \(suggestedNumStr)\(self.unitStr), \(leftNumStr)\(self.unitStr) to go")
-            }
-        } else {
-            
-            let drinkNumStr = String(format: "%.1f", self.healthKitManager.todayTotalDrinkNum)
-            let suggestedNumStr = String(format: "%.1f", self.config.getDailyGoal())
-            let leftNumStr = String(format: "%.1f", max(0.0, self.config.getDailyGoal() - self.healthKitManager.todayTotalDrinkNum))
-            
-            // Always use main thread to update UI.
-            DispatchQueue.main.async{
-                self.textStr = LocalizedStringKey("Today you drink \(drinkNumStr)\(self.unitStr) out of the goal \(suggestedNumStr)\(self.unitStr), \(leftNumStr)\(self.unitStr) to go")
-            }
+        // Each amount scales to liters independently (ml mode, >= 1000), so one
+        // sentence can mix units, e.g. "850ml ... 2.4L ... 1.55L to go".
+        let drinkNumPair = config.waterUnit.volumeStrPair(self.healthKitManager.todayTotalDrinkNum)
+        let suggestedNumPair = config.waterUnit.volumeStrPair(self.config.getDailyGoal())
+        let leftNumPair = config.waterUnit.volumeStrPair(max(0.0, self.config.getDailyGoal() - self.healthKitManager.todayTotalDrinkNum))
+
+        // Always use main thread to update UI.
+        DispatchQueue.main.async{
+            self.textStr = LocalizedStringKey("Today you drink \(drinkNumPair.numStr)\(drinkNumPair.unitStr) out of the goal \(suggestedNumPair.numStr)\(suggestedNumPair.unitStr), \(leftNumPair.numStr)\(leftNumPair.unitStr) to go")
         }
         
         DispatchQueue.main.async{

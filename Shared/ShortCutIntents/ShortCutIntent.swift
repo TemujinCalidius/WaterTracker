@@ -26,14 +26,9 @@ struct ShortCutIntent: AppIntent {
         
         _ = await healthKitManager.saveDrinkWater(drink_num: self.drinkNum, waterUnitInput: config.getUnit())
         
-        var res_str:String.LocalizationValue = ""
-        if config.getUnit() == .ml {
-            let tmp_res_str = String(format:"Logged %.0f\(config.getUnitStr()) water drinking. ", drinkNum)
-            res_str = String.LocalizationValue(stringLiteral: tmp_res_str)
-        } else {
-            let tmp_res_str = String(format:"Logged %.1f\(config.getUnitStr()) water drinking. ", drinkNum)
-            res_str = String.LocalizationValue(stringLiteral: tmp_res_str)
-        }
+        let volumePair = config.getUnit().volumeStrPair(drinkNum)
+        let tmp_res_str = "Logged \(volumePair.numStr)\(volumePair.unitStr) water drinking. "
+        let res_str = String.LocalizationValue(stringLiteral: tmp_res_str)
         
         WidgetCenter.shared.reloadAllTimelines()
         LocalNotificationHandler.registerLocalNotification()
