@@ -44,28 +44,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "297759482CCD881E00D54F00"
-               BuildableName = "WaterTracker Watch AppTests.xctest"
-               BlueprintName = "WaterTracker Watch AppTests"
-               ReferencedContainer = "container:WaterTracker.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "297759522CCD881E00D54F00"
-               BuildableName = "WaterTracker Watch AppUITests.xctest"
-               BlueprintName = "WaterTracker Watch AppUITests"
-               ReferencedContainer = "container:WaterTracker.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

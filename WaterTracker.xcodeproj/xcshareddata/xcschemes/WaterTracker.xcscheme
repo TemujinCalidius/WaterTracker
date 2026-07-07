@@ -35,20 +35,9 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "297759202CCD881D00D54F00"
+               BlueprintIdentifier = "5653125E21F8EACE7237AE20"
                BuildableName = "WaterTrackerTests.xctest"
                BlueprintName = "WaterTrackerTests"
-               ReferencedContainer = "container:WaterTracker.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2977592A2CCD881D00D54F00"
-               BuildableName = "WaterTrackerUITests.xctest"
-               BlueprintName = "WaterTrackerUITests"
                ReferencedContainer = "container:WaterTracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
