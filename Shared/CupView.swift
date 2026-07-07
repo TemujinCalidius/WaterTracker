@@ -60,17 +60,22 @@ struct CupView: View {
         config.waterUnit == .ml ? 4000.0 : 135.0
     }
 
-    // Quick-fill presets shown above the cup, in the current unit.
-    var quickAmounts: [Double] {
-        config.waterUnit == .ml ? [250, 500, 1000] : [8, 16, 32]
+    // Quick-fill presets shown above the bottle. Stored as canonical ml
+    // (user-customizable in Settings) and rendered/logged in the current unit.
+    var quickAmountsML: [Double] {
+        QuickAddStore.get()
     }
 
-    func quickAmountLabel(_ amount: Double) -> String {
+    func quickAmountLabel(_ amountML: Double) -> String {
         if config.waterUnit == .ml {
-            return amount >= 1000 ? "\(Int(amount / 1000))L" : "\(Int(amount))ml"
+            return amountML >= 1000 ? String(format: "%gL", amountML / 1000.0) : "\(Int(amountML))ml"
         } else {
-            return "\(Int(amount))oz"
+            return "\(Int((amountML / mlPerUSFluidOunce).rounded()))oz"
         }
+    }
+
+    func drinkNumForAmountML(_ amountML: Double) -> Double {
+        config.waterUnit == .ml ? amountML : amountML / mlPerUSFluidOunce
     }
 
     func setDrinkNum(_ amount: Double) {
@@ -124,11 +129,11 @@ struct CupView: View {
                         // Quick-fill presets. Tapping the amount number below
                         // still opens a type-it-in field for anything else.
                         HStack(spacing: 12) {
-                            ForEach(quickAmounts, id: \.self) { amount in
+                            ForEach(quickAmountsML, id: \.self) { amountML in
                                 Button {
-                                    setDrinkNum(amount)
+                                    setDrinkNum(drinkNumForAmountML(amountML))
                                 } label: {
-                                    Text(verbatim: quickAmountLabel(amount))
+                                    Text(verbatim: quickAmountLabel(amountML))
                                         .font(.headline)
                                         .foregroundStyle(.black)
                                         .padding(.horizontal, 18)

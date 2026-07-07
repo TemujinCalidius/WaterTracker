@@ -198,15 +198,112 @@ struct UnitPickerView: View {
                 }
             }
         }
+
+#if os(iOS)
+        HStack {
+            NavigationLink {
+                QuickAddsEditorView()
+            } label: {
+                Text("Quick Add Amounts")
+                    .font(.title)
+                    .foregroundStyle(.black)
+                    .fontWeight(.bold)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.black)
+            }
+        }
+#endif
     }
     
 }
+
+#if os(iOS)
+struct QuickAddsEditorView: View {
+    /* Lets the user customize the quick-fill preset amounts shown above the
+     * bottle. Values are stored canonically in ml (QuickAddStore) but edited
+     * and displayed in the current unit. */
+
+    @Environment(WaterTrackerConfigManager.self) private var config
+    @State private var amountsML: [Double] = QuickAddStore.get()
+    @State private var isShowEntry: Bool = false
+    @State private var entryText: String = ""
+    @State private var editingIndex: Int? = nil
+
+    private func label(_ ml: Double) -> String {
+        if config.waterUnit == .ml {
+            return ml >= 1000 ? String(format: "%gL", ml / 1000.0) : "\(Int(ml))ml"
+        } else {
+            return "\(Int((ml / mlPerUSFluidOunce).rounded()))oz"
+        }
+    }
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(amountsML.indices, id: \.self) { index in
+                    Button {
+                        editingIndex = index
+                        entryText = config.waterUnit == .ml
+                            ? String(Int(amountsML[index]))
+                            : String(Int((amountsML[index] / mlPerUSFluidOunce).rounded()))
+                        isShowEntry = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "drop.fill")
+                                .foregroundStyle(.blue)
+                            Text("Quick Add")
+                            Spacer()
+                            Text(label(amountsML[index]))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .tint(.primary)
+                }
+                .onDelete { offsets in
+                    amountsML.remove(atOffsets: offsets)
+                    QuickAddStore.set(amountsML)
+                }
+
+                if amountsML.count < 6 {
+                    Button {
+                        amountsML.append(250)
+                        QuickAddStore.set(amountsML)
+                    } label: {
+                        Label("Add Amount", systemImage: "plus.circle.fill")
+                    }
+                }
+            } header: {
+                Text("Quick Add Amounts")
+            } footer: {
+                Text("These appear above the bottle for one-tap logging. Swipe to delete.")
+            }
+        }
+        .navigationTitle("Quick Adds")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Set Amount", isPresented: $isShowEntry) {
+            TextField("Amount", text: $entryText)
+                .keyboardType(.numberPad)
+            Button("Cancel", role: .cancel) { editingIndex = nil }
+            Button("Set") {
+                if let index = editingIndex, let value = Double(entryText), value > 0 {
+                    amountsML[index] = config.waterUnit == .ml ? value : value * mlPerUSFluidOunce
+                    QuickAddStore.set(amountsML)
+                }
+                editingIndex = nil
+            }
+        } message: {
+            Text("Enter the amount in \(config.getUnitStr()).")
+        }
+    }
+}
+#endif
 
 #Preview {
     @Previewable @State var healthKitManager = HealthKitManager()
     @Previewable @State var configManager = WaterTrackerConfigManager()
     @Previewable @State var updateToggle = false
-    
+
     UnitPickerView(updateToggle: $updateToggle)
         .background(Color.white.edgesIgnoringSafeArea(.all))
         .environment(healthKitManager)
