@@ -15,6 +15,9 @@ import SwiftUI
  */
 let drinkCatalogVersion: Int = 1
 
+// HealthKit's exact US fluid ounce, in milliliters.
+let mlPerUSFluidOunce: Double = 29.5735295625
+
 /*
  * Custom HKMetadata keys carried on every dietaryWater sample this app writes.
  * The prefix matches the notification-id convention (NotificationHandler.swift).
@@ -40,6 +43,9 @@ enum DrinkLogMetadata {
  */
 enum LastDrinkTypeStore {
     static let storageKey = "YuLiang.SimpleWaterTracker.lastDrinkType"
+    // One-time "counts as N% toward your goal" alert, shown on the first
+    // log of a drink whose writeFactor is below 1.0.
+    static let factorDisclosureShownKey = "YuLiang.SimpleWaterTracker.factorDisclosureShown"
 
     static var defaults: UserDefaults {
         UserDefaults(suiteName: "group.YuLiang.WaterTracker") ?? UserDefaults.standard
@@ -235,8 +241,8 @@ enum DrinkType: String, Codable, Hashable, CaseIterable, Identifiable {
         }
     }
 
-    /* User-facing name. en + zh-Hans values land in Localizable.xcstrings with the picker UI. */
-    var displayName: LocalizedStringKey {
+    /* Localization key shared by displayName and localizedName. en + zh-Hans values live in Localizable.xcstrings. */
+    private var nameKey: String {
         switch self {
         case .water: return "Water"
         case .sparklingWater: return "Sparkling Water"
@@ -260,5 +266,17 @@ enum DrinkType: String, Codable, Hashable, CaseIterable, Identifiable {
         case .proteinShake: return "Protein Shake"
         case .hotChocolate: return "Hot Chocolate"
         }
+    }
+
+    /* User-facing name for SwiftUI Text. */
+    var displayName: LocalizedStringKey {
+        return LocalizedStringKey(self.nameKey)
+    }
+
+    /* Localized plain String, for interpolation into pattern keys
+     * (e.g. the "%@ + " flash text) where a LocalizedStringKey would
+     * not localize. Same mechanism as ShortCutIntent's dialog. */
+    var localizedName: String {
+        return String(localized: String.LocalizationValue(stringLiteral: self.nameKey))
     }
 }
