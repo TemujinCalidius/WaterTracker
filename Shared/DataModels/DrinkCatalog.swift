@@ -31,6 +31,33 @@ enum DrinkLogMetadata {
 }
 
 /*
+ * Last-selected drink type, per-device UI state.
+ * Deliberately stored in the shared app-group UserDefaults and NOT in the
+ * CloudKit-synced configuration @Model: the selection changes with almost
+ * every log, and a device still running an older app version would drop
+ * unknown config fields through the delete-all-then-reinsert setters.
+ * Logged samples carry their own metadata, so history never depends on this.
+ */
+enum LastDrinkTypeStore {
+    static let storageKey = "YuLiang.SimpleWaterTracker.lastDrinkType"
+
+    static var defaults: UserDefaults {
+        UserDefaults(suiteName: "group.YuLiang.WaterTracker") ?? UserDefaults.standard
+    }
+
+    static func get() -> DrinkType {
+        guard let rawValue = defaults.string(forKey: storageKey) else {
+            return .water
+        }
+        return DrinkType(rawValue: rawValue) ?? .water
+    }
+
+    static func set(_ drinkType: DrinkType) {
+        defaults.set(drinkType.rawValue, forKey: storageKey)
+    }
+}
+
+/*
  * Sections group drinks in the picker. Alcohol is intentionally absent for now
  * (keeps the App Store rating at 4+); adding an `alcohol` case here plus the
  * alcohol drink cases below is a purely additive change.

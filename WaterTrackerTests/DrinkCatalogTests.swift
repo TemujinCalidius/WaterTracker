@@ -109,4 +109,37 @@ struct DrinkCatalogTests {
         let used = Set(DrinkType.allCases.map(\.section))
         #expect(used == Set(DrinkSection.allCases))
     }
+
+    @Test func effectiveWriteVolumeExamples() {
+        // What saveDrinkWater records: raw volume x writeFactor.
+        #expect(250.0 * DrinkType.water.writeFactor == 250.0)
+        #expect(250.0 * DrinkType.coffee.writeFactor == 237.5)
+        #expect(330.0 * DrinkType.sodaRegular.writeFactor == 280.5)
+        // High-retention drinks write at face value, never more.
+        #expect(250.0 * DrinkType.milkSkim.writeFactor == 250.0)
+        #expect(250.0 * DrinkType.ors.writeFactor == 250.0)
+    }
+
+    @Test func lastDrinkTypeStoreRoundTrip() {
+        let original = LastDrinkTypeStore.defaults.string(forKey: LastDrinkTypeStore.storageKey)
+        defer {
+            // Restore whatever was there so tests never leak state.
+            if let original {
+                LastDrinkTypeStore.defaults.set(original, forKey: LastDrinkTypeStore.storageKey)
+            } else {
+                LastDrinkTypeStore.defaults.removeObject(forKey: LastDrinkTypeStore.storageKey)
+            }
+        }
+
+        LastDrinkTypeStore.set(.coffee)
+        #expect(LastDrinkTypeStore.get() == .coffee)
+
+        // Unknown persisted value (e.g. a drink from a newer catalog) falls
+        // back to water instead of crashing or sticking.
+        LastDrinkTypeStore.defaults.set("drink_from_the_future", forKey: LastDrinkTypeStore.storageKey)
+        #expect(LastDrinkTypeStore.get() == .water)
+
+        LastDrinkTypeStore.defaults.removeObject(forKey: LastDrinkTypeStore.storageKey)
+        #expect(LastDrinkTypeStore.get() == .water)
+    }
 }

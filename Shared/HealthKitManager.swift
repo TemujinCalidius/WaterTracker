@@ -16,6 +16,15 @@ struct HealthMetric: Identifiable {
     let value: Double
 }
 
+// One drink type's share of today, both volumes in canonical ml.
+// Views convert to the display unit themselves.
+struct DrinkBreakdownMetric: Identifiable {
+    let id = UUID()
+    let type: DrinkType
+    let rawML: Double       // beverage volume poured
+    let effectiveML: Double // hydration credit written to HealthKit
+}
+
 // Helper data mocking function.
 // Move to global scope, so it can be easily called by Previews to mock data.
 func fillEmptyData(drinkDataRaw: [HealthMetric], startDate: Date, endDate: Date, gapUnit: Calendar.Component, isMock: Bool = false) -> [HealthMetric] {
@@ -57,6 +66,7 @@ class HealthKitManager {
     
     var drinkWeekData: [HealthMetric] = []
     var drinkDayData: [HealthMetric] = []
+    var todayBreakdownData: [DrinkBreakdownMetric] = []
 
     static let shared = HealthKitManager()
     var healthStore = HKHealthStore()
@@ -112,7 +122,7 @@ class HealthKitManager {
         return err
     }
     
-    func saveDrinkWater(drink_num: Double, waterUnitInput: WaterUnits) async -> HealthKitError? {
+    func saveDrinkWater(drink_num: Double, waterUnitInput: WaterUnits, drinkType: DrinkType = .water) async -> HealthKitError? {
         if let errMsg = checkHealthKitAvailability() {
             return errMsg
         }
@@ -125,15 +135,38 @@ class HealthKitManager {
         
         let waterNumType = HKSampleType.quantityType(forIdentifier: .dietaryWater)!
         
+        /*
+         * The sample quantity stores the EFFECTIVE hydration volume
+         * (raw volume x writeFactor, capped at 1.0 - never record more water
+         * than was poured), so every statistics-sum consumer (today total,
+         * charts, ring, widgets) keeps working untouched. The raw volume and
+         * the factor snapshots ride along as write-once metadata.
+         */
+        let effective_drink_num = drink_num * drinkType.writeFactor
+
         var waterUnit = HKUnit.fluidOunceUS()
-        var saving_drink_num_with_correct_unit = drink_num
+        var saving_drink_num_with_correct_unit = effective_drink_num
         if waterUnitInput == .ml {
             waterUnit = HKUnit.liter()
             saving_drink_num_with_correct_unit /= 1000.0
         }
         let waterQuantity = HKQuantity(unit: waterUnit, doubleValue: saving_drink_num_with_correct_unit)
+
+        // Canonical ml for the metadata; oz converts through HealthKit's own
+        // exact fluid-ounce definition instead of a hand-rounded constant.
+        var rawVolumeML = drink_num
+        if waterUnitInput == .oz {
+            rawVolumeML = HKQuantity(unit: HKUnit.fluidOunceUS(), doubleValue: drink_num).doubleValue(for: HKUnit.literUnit(with: .milli))
+        }
+        let metadata: [String: Any] = [
+            DrinkLogMetadata.drinkType: drinkType.rawValue,
+            DrinkLogMetadata.rawVolumeML: rawVolumeML,
+            DrinkLogMetadata.factorAtLog: drinkType.writeFactor,
+            DrinkLogMetadata.strictFactorAtLog: drinkType.strictFactor,
+            DrinkLogMetadata.catalogVersion: drinkCatalogVersion,
+        ]
         
-        let waterSample = HKQuantitySample(type: waterNumType, quantity: waterQuantity, start: Date(), end: Date())
+        let waterSample = HKQuantitySample(type: waterNumType, quantity: waterQuantity, start: Date(), end: Date(), metadata: metadata)
         
         var ret_err: HealthKitError? = nil
         
@@ -338,7 +371,70 @@ class HealthKitManager {
         } catch {
             return .healthKitNotAuthorized
         }
-        
+
+        return nil
+    }
+
+    func updateDrinkBreakdownToday() async -> HealthKitError? {
+        // Per-drink-type share of today, reconstructed from the sample
+        // metadata written by saveDrinkWater. Samples without our metadata
+        // (logs from before this feature, or from third-party apps) count
+        // as plain water at face value.
+
+        if let errMsg = checkHealthKitAvailability() {
+            return errMsg
+        }
+        // Request permission again if the user change the permission outside the app.
+        // OK if the permission is already granted. No repeated pop-up screen.
+        if let errMsg = requestAuthorization() {
+            return errMsg
+        }
+
+        let calendar = NSCalendar.current
+        let now = getStartOfDate(date: Date())
+        let components = calendar.dateComponents([.year, .month, .day], from: now)
+
+        guard let lastMidnightDate = calendar.date(from: components) else {
+            fatalError("*** Unable to create the start date ***")
+        }
+
+        guard let todayMidnightDate = calendar.date(byAdding: .day, value: 1, to: lastMidnightDate) else {
+            fatalError("*** Unable to create the end date ***")
+        }
+
+        let todayPredicate = HKQuery.predicateForSamples(withStart: lastMidnightDate,
+                                                              end: todayMidnightDate,
+                                                              options: [])
+        let samplePredicate = HKSamplePredicate.quantitySample(type: HKQuantityType(.dietaryWater), predicate: todayPredicate)
+
+        let breakdownQuery = HKSampleQueryDescriptor(predicates: [samplePredicate], sortDescriptors: [])
+
+        do {
+            let samples = try await breakdownQuery.result(for: healthStore)
+
+            var rawByType: [DrinkType: Double] = [:]
+            var effectiveByType: [DrinkType: Double] = [:]
+            for sample in samples {
+                let typeStr = sample.metadata?[DrinkLogMetadata.drinkType] as? String ?? ""
+                let type = DrinkType(rawValue: typeStr) ?? .water
+                let effectiveML = sample.quantity.doubleValue(for: HKUnit.literUnit(with: .milli))
+                let rawML = sample.metadata?[DrinkLogMetadata.rawVolumeML] as? Double ?? effectiveML
+                rawByType[type, default: 0.0] += rawML
+                effectiveByType[type, default: 0.0] += effectiveML
+            }
+
+            let breakdownData: [DrinkBreakdownMetric] = effectiveByType.map {
+                DrinkBreakdownMetric(type: $0.key, rawML: rawByType[$0.key] ?? 0.0, effectiveML: $0.value)
+            }.sorted { $0.effectiveML > $1.effectiveML }
+
+            await MainActor.run {
+                self.todayBreakdownData = breakdownData
+            }
+
+        } catch {
+            return .healthKitNotAuthorized
+        }
+
         return nil
     }
 
