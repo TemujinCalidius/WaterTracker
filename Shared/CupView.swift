@@ -80,7 +80,6 @@ struct CupView: View {
                                     .frame(width: cupWidth, alignment: .center)
                                     .overlay(
                                         WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
-                                            .animation(.easeInOut(duration: 0.4), value: selectedDrinkType)
                                             .frame(width: cupWidth, alignment: .center)
                                             .aspectRatio( contentMode: .fill)
                                             .mask(
