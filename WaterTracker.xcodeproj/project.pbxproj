@@ -82,7 +82,13 @@
 		29E22C572CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
 		29E22C582CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
 		29E22C592CDABE0B006D186E /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 29E22C552CDABE0B006D186E /* Localizable.xcstrings */; };
+		5572EE14BC8A13350CBFC937 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
+		5FABF8365BE1E89A24EBA18D /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		74724A548984E25176D442B9 /* DateHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41493EC7E31F286D0D8BFD63 /* DateHandlingTests.swift */; };
+		75B080FCD2227670EE53E5D6 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
+		835830810DBF8EE0895CABB0 /* DrinkCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8FD8815B6CA5CB743DC0CD /* DrinkCatalogTests.swift */; };
+		84B941DF3B87347A6E6EA766 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
+		A62BF03E8894FEED1FB409C9 /* DrinkCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */; };
 		A7A168E6070D0E594EF098C0 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A489A82CD2B9D2005AA4A1 /* Units.swift */; };
 		C0EB13DDCC48BADF93BCC1EB /* DateHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964344E2CD9D6A4008429BC /* DateHandling.swift */; };
 		E3DEADA03B656EEDBC575593 /* UnitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6281E8B9AA11FDB96FCD84D7 /* UnitsTests.swift */; };
@@ -181,7 +187,9 @@
 		29E22C552CDABE0B006D186E /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		2AEF7EA9D9AA631758D013FA /* WaterTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		41493EC7E31F286D0D8BFD63 /* DateHandlingTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DateHandlingTests.swift; sourceTree = "<group>"; };
+		4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCatalog.swift; sourceTree = "<group>"; };
 		6281E8B9AA11FDB96FCD84D7 /* UnitsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UnitsTests.swift; sourceTree = "<group>"; };
+		8F8FD8815B6CA5CB743DC0CD /* DrinkCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkCatalogTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -353,6 +361,7 @@
 				2964344E2CD9D6A4008429BC /* DateHandling.swift */,
 				29A489AB2CD2BD38005AA4A1 /* WaterTrackerConfigurations.swift */,
 				29A489A82CD2B9D2005AA4A1 /* Units.swift */,
+				4CF0C65261BB69DAFA7A0ABE /* DrinkCatalog.swift */,
 			);
 			path = DataModels;
 			sourceTree = "<group>";
@@ -416,6 +425,7 @@
 			children = (
 				6281E8B9AA11FDB96FCD84D7 /* UnitsTests.swift */,
 				41493EC7E31F286D0D8BFD63 /* DateHandlingTests.swift */,
+				8F8FD8815B6CA5CB743DC0CD /* DrinkCatalogTests.swift */,
 			);
 			name = WaterTrackerTests;
 			path = WaterTrackerTests;
@@ -652,6 +662,7 @@
 				293257732D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29C2FF2E2CD9B158008A4EC7 /* BarChart.swift in Sources */,
 				29C2FF2A2CD9B102008A4EC7 /* CircularProgress.swift in Sources */,
+				5FABF8365BE1E89A24EBA18D /* DrinkCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,6 +687,7 @@
 				29D8FE7E2CCECB9D00504B17 /* WaveAnimation.swift in Sources */,
 				293257762D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29D17B192CD446970049B75C /* UnitPicker.swift in Sources */,
+				5572EE14BC8A13350CBFC937 /* DrinkCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,6 +712,7 @@
 				29D8FE802CCECDD100504B17 /* WaveAnimation.swift in Sources */,
 				293257742D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29D17B182CD446970049B75C /* UnitPicker.swift in Sources */,
+				75B080FCD2227670EE53E5D6 /* DrinkCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,6 +729,7 @@
 				293257752D01085C008F4AEF /* ColorExtension.swift in Sources */,
 				29E22C4B2CDAAECF006D186E /* AccessoryWidget.swift in Sources */,
 				29C2FF282CD9AEF9008A4EC7 /* CircularProgress.swift in Sources */,
+				A62BF03E8894FEED1FB409C9 /* DrinkCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,6 +741,8 @@
 				74724A548984E25176D442B9 /* DateHandlingTests.swift in Sources */,
 				A7A168E6070D0E594EF098C0 /* Units.swift in Sources */,
 				C0EB13DDCC48BADF93BCC1EB /* DateHandling.swift in Sources */,
+				84B941DF3B87347A6E6EA766 /* DrinkCatalog.swift in Sources */,
+				835830810DBF8EE0895CABB0 /* DrinkCatalogTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
