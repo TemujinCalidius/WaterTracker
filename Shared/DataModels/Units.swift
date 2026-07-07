@@ -11,12 +11,13 @@ enum WaterUnits: Codable, Hashable {
     case ml
     
     var cupDefaultCapacity: Double {
-        // FIXME:: Changing cup size?
+        // The on-screen vessel is a 1 L bottle, so the fill reads accurately:
+        // 500ml is half full, 1L is full.
         switch self {
         case .oz:
-            return 20.0
+            return 34.0
         case .ml:
-            return 600.0
+            return 1000.0
         }
     }
     

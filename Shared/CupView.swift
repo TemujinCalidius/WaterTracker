@@ -113,6 +113,11 @@ struct CupView: View {
                     .ignoresSafeArea(.all) // As background.
                 GeometryReader { geometry in
                     @State var cupWidth = geometry.size.width * 0.8
+                    // 1 L bottle dimensions. The body is a Capsule whose fill
+                    // maps 1:1 to drinkNum / cupCapacity (1000ml), so 500ml is
+                    // exactly half full.
+                    let bottleWidth = geometry.size.width * 0.40
+                    let bottleBodyHeight = geometry.size.height * 0.42
                     VStack{
                         Spacer()
 #if !os(watchOS)
@@ -137,39 +142,43 @@ struct CupView: View {
                         .padding(.bottom)
 #endif
                         HStack{
-                            
+
                             Spacer()
-                            ZStack{
-                                
-                                Cup()
+                            VStack(spacing: geometry.size.height * 0.008) {
+                                // Bottle cap.
+                                RoundedRectangle(cornerRadius: bottleWidth * 0.10)
                                     .fill(Color.white)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: cupWidth, alignment: .center)
                                     .overlay(
-                                        WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
-                                            .frame(width: cupWidth, alignment: .center)
-                                            .aspectRatio( contentMode: .fill)
-                                            .mask(
-                                                Cup()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: cupWidth, alignment: .center)
-                                            )
-                                    )
-                                
-                                
-                                Cup()
+                                        RoundedRectangle(cornerRadius: bottleWidth * 0.10)
 #if !os(watchOS)
-                                    .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
+                                            .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
 #else
-                                    .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
+                                            .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
 #endif
-                                
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: cupWidth, alignment: .center)
-                                    .overlay(
-                                        InvisibleSlider()
                                     )
-                                
+                                    .frame(width: bottleWidth * 0.42, height: geometry.size.height * 0.028)
+
+                                // Bottle body. The Capsule is filled directly by
+                                // the wave, so the liquid level is accurate.
+                                ZStack{
+                                    Capsule()
+                                        .fill(Color.white)
+                                        .overlay(
+                                            WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
+                                                .mask(Capsule())
+                                        )
+
+                                    Capsule()
+#if !os(watchOS)
+                                        .stroke(Color.black, style: StrokeStyle(lineWidth: 8))
+#else
+                                        .stroke(Color.black, style: StrokeStyle(lineWidth: 5))
+#endif
+                                        .overlay(
+                                            InvisibleSlider()
+                                        )
+                                }
+                                .frame(width: bottleWidth, height: bottleBodyHeight)
                             }
                             Spacer()
                         }
