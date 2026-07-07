@@ -54,9 +54,32 @@ struct CupView: View {
         }
     }
 
+    // Generous per-log ceiling (e.g. a 1L bottle), well above the cup's visual
+    // capacity; the wave just shows full past capacity. Kept in the current unit.
+    var maxLogAmount: Double {
+        config.waterUnit == .ml ? 4000.0 : 135.0
+    }
+
+    // Quick-fill presets shown above the cup, in the current unit.
+    var quickAmounts: [Double] {
+        config.waterUnit == .ml ? [250, 500, 1000] : [8, 16, 32]
+    }
+
+    func quickAmountLabel(_ amount: Double) -> String {
+        if config.waterUnit == .ml {
+            return amount >= 1000 ? "\(Int(amount / 1000))L" : "\(Int(amount))ml"
+        } else {
+            return "\(Int(amount))oz"
+        }
+    }
+
+    func setDrinkNum(_ amount: Double) {
+        self.healthKitManager.drinkNum = min(maxLogAmount, max(config.cupMinimumNum, amount))
+    }
+
     func commitAmountEntry() {
         guard let value = Double(amountEntryText), value > 0 else { return }
-        self.healthKitManager.drinkNum = min(config.cupCapacity, max(config.cupMinimumNum, value))
+        setDrinkNum(value)
     }
     
     func setDefaultDrinkNum() {
@@ -81,6 +104,27 @@ struct CupView: View {
                     @State var cupWidth = geometry.size.width * 0.8
                     VStack{
                         Spacer()
+#if !os(watchOS)
+                        // Quick-fill presets. Tapping the amount number below
+                        // still opens a type-it-in field for anything else.
+                        HStack(spacing: 12) {
+                            ForEach(quickAmounts, id: \.self) { amount in
+                                Button {
+                                    setDrinkNum(amount)
+                                } label: {
+                                    Text(verbatim: quickAmountLabel(amount))
+                                        .font(.headline)
+                                        .foregroundStyle(.black)
+                                        .padding(.horizontal, 18)
+                                        .padding(.vertical, 10)
+                                        .background(.regularMaterial)
+                                        .clipShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.bottom)
+#endif
                         HStack{
                             
                             Spacer()
@@ -284,8 +328,9 @@ struct CupView: View {
 
 struct DrinkTypePickerButton: View {
     /* Sparing extraction from CupView's bottom HStack (see the FIXME above).
-     * iOS renders a Menu with drink sections plus serving shortcuts;
-     * watchOS pushes a list, following UnitPicker's platform split. */
+     * iOS renders a Menu of drink types; watchOS pushes a list, following
+     * UnitPicker's platform split. The amount is set separately (quick-fill
+     * presets above the cup, or by tapping the amount number). */
 
     @Environment(HealthKitManager.self) private var healthKitManager
     @Environment(WaterTrackerConfigManager.self) private var config
@@ -295,28 +340,6 @@ struct DrinkTypePickerButton: View {
     var body: some View {
 #if !os(watchOS)
         Menu {
-            // Quick serving sizes first, so setting the amount doesn't require
-            // scrolling past the whole drink list. Tapping the amount number
-            // also opens a type-it-in field.
-            Section {
-                ForEach(selectedDrinkType.defaultServingsML, id: \.self) { servingML in
-                    Button {
-                        if config.waterUnit == .ml {
-                            self.healthKitManager.drinkNum = servingML
-                        } else {
-                            self.healthKitManager.drinkNum = servingML / mlPerUSFluidOunce
-                        }
-                    } label: {
-                        if config.waterUnit == .ml {
-                            Text(String("\(Int(servingML))ml"))
-                        } else {
-                            Text(String(format: "%.1foz", servingML / mlPerUSFluidOunce))
-                        }
-                    }
-                }
-            } header: {
-                Text("Serving Size")
-            }
             ForEach(DrinkSection.allCases) { section in
                 Section {
                     ForEach(DrinkType.allCases.filter { $0.section == section }) { drink in
