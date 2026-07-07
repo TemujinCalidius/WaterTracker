@@ -263,7 +263,9 @@ class HealthKitManager {
                 .init(date: $0.startDate, value: ($0.sumQuantity()?.doubleValue(for: waterUnit) ?? 0.0) * unitMultiplyer)
             }
             
-            self.drinkDayData = fillEmptyData(drinkDataRaw: drinkDayDataRaw, startDate: lastMidnightDate, endDate: todayMidnightDate, gapUnit: .hour)
+            await MainActor.run {
+                self.drinkDayData = fillEmptyData(drinkDataRaw: drinkDayDataRaw, startDate: lastMidnightDate, endDate: todayMidnightDate, gapUnit: .hour)
+            }
             
         } catch {
             return .healthKitNotAuthorized
@@ -329,7 +331,9 @@ class HealthKitManager {
             }
             
             
-            self.drinkWeekData = fillEmptyData(drinkDataRaw: drinkWeekDataRaw, startDate: oneWeekBeforeDate, endDate: todayMidnightDate, gapUnit: .day)
+            await MainActor.run {
+                self.drinkWeekData = fillEmptyData(drinkDataRaw: drinkWeekDataRaw, startDate: oneWeekBeforeDate, endDate: todayMidnightDate, gapUnit: .day)
+            }
             
         } catch {
             return .healthKitNotAuthorized
