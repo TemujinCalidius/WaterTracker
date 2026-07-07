@@ -185,12 +185,32 @@
         }
       }
     },
+    "Amount" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "饮用量"
+          }
+        }
+      }
+    },
     "Broth / Soup" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "肉汤 / 汤"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
           }
         }
       }
@@ -403,6 +423,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "能量饮料"
+          }
+        }
+      }
+    },
+    "Enter the amount in %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the amount in %1$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请输入饮用量（%1$@）。"
           }
         }
       }
@@ -645,6 +681,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "份量"
+          }
+        }
+      }
+    },
+    "Set" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
+    },
+    "Set Amount" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置饮用量"
           }
         }
       }

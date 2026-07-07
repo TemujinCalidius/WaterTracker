@@ -41,6 +41,23 @@ struct CupView: View {
     // One-time "counts as N% toward your goal" disclosure.
     @State private var isShowFactorDisclosure: Bool = false
     @State private var disclosureDrinkType: DrinkType = .water
+
+    // Tap-the-amount-to-type entry (iOS). The invisible cup drag still works too.
+    @State private var isShowAmountEntry: Bool = false
+    @State private var amountEntryText: String = ""
+
+    func prefillAmountEntry() {
+        if config.waterUnit == .ml {
+            self.amountEntryText = String(Int(self.healthKitManager.drinkNum))
+        } else {
+            self.amountEntryText = String(format: "%.1f", self.healthKitManager.drinkNum)
+        }
+    }
+
+    func commitAmountEntry() {
+        guard let value = Double(amountEntryText), value > 0 else { return }
+        self.healthKitManager.drinkNum = min(config.cupCapacity, max(config.cupMinimumNum, value))
+    }
     
     func setDefaultDrinkNum() {
         self.healthKitManager.drinkNum = Double(Int(config.getCupCapacity() * 3 / 4))
@@ -171,7 +188,23 @@ struct CupView: View {
                             DrinkTypePickerButton(selectedDrinkType: $selectedDrinkType)
 
                             Spacer()
-                            
+
+#if os(iOS)
+                            // Tap the amount to type an exact value.
+                            Button {
+                                prefillAmountEntry()
+                                isShowAmountEntry = true
+                            } label: {
+                                Text(self.textStr)
+                                    .font(.system(size: 300))
+                                    .minimumScaleFactor(0.00001)
+                                    .foregroundStyle(.black)
+                                    .fontWeight(.bold)
+                                    .frame(height: geometry.size.width * 0.30, alignment: .center)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .buttonStyle(.plain)
+#else
                             Text(self.textStr)
                                 .font(.system(size: 300))
                                 .minimumScaleFactor(0.00001)
@@ -180,7 +213,8 @@ struct CupView: View {
                                 .frame(height: geometry.size.width * 0.30, alignment: .center)
                                 .allowsHitTesting(false)
                                 .multilineTextAlignment(.center)
-                            
+#endif
+
                             Spacer()
                             
                             NavigationLink(destination: SummaryView() ) {
@@ -238,6 +272,16 @@ struct CupView: View {
                 let pctStr = String(format: "%.0f%%", disclosureDrinkType.writeFactor * 100.0)
                 Text("\(disclosureDrinkType.localizedName) counts as \(pctStr) of its volume toward your daily goal, based on how well it hydrates (Maughan et al. 2016).")
             }
+#if os(iOS)
+            .alert("Set Amount", isPresented: $isShowAmountEntry) {
+                TextField("Amount", text: $amountEntryText)
+                    .keyboardType(.decimalPad)
+                Button("Cancel", role: .cancel) {}
+                Button("Set") { commitAmountEntry() }
+            } message: {
+                Text("Enter the amount in \(config.getUnitStr()).")
+            }
+#endif
         }
         .accentColor(.black)
     }
@@ -256,6 +300,28 @@ struct DrinkTypePickerButton: View {
     var body: some View {
 #if !os(watchOS)
         Menu {
+            // Quick serving sizes first, so setting the amount doesn't require
+            // scrolling past the whole drink list. Tapping the amount number
+            // also opens a type-it-in field.
+            Section {
+                ForEach(selectedDrinkType.defaultServingsML, id: \.self) { servingML in
+                    Button {
+                        if config.waterUnit == .ml {
+                            self.healthKitManager.drinkNum = servingML
+                        } else {
+                            self.healthKitManager.drinkNum = servingML / mlPerUSFluidOunce
+                        }
+                    } label: {
+                        if config.waterUnit == .ml {
+                            Text(String("\(Int(servingML))ml"))
+                        } else {
+                            Text(String(format: "%.1foz", servingML / mlPerUSFluidOunce))
+                        }
+                    }
+                }
+            } header: {
+                Text("Serving Size")
+            }
             ForEach(DrinkSection.allCases) { section in
                 Section {
                     ForEach(DrinkType.allCases.filter { $0.section == section }) { drink in
@@ -278,25 +344,6 @@ struct DrinkTypePickerButton: View {
                 } header: {
                     Text(section.displayName)
                 }
-            }
-            Section {
-                ForEach(selectedDrinkType.defaultServingsML, id: \.self) { servingML in
-                    Button {
-                        if config.waterUnit == .ml {
-                            self.healthKitManager.drinkNum = servingML
-                        } else {
-                            self.healthKitManager.drinkNum = servingML / mlPerUSFluidOunce
-                        }
-                    } label: {
-                        if config.waterUnit == .ml {
-                            Text(String("\(Int(servingML))ml"))
-                        } else {
-                            Text(String(format: "%.1foz", servingML / mlPerUSFluidOunce))
-                        }
-                    }
-                }
-            } header: {
-                Text("Serving Size")
             }
         } label: {
             Image(systemName: selectedDrinkType.symbolName)
