@@ -185,6 +185,16 @@
         }
       }
     },
+    "Add Amount" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加数量"
+          }
+        }
+      }
+    },
     "Amount" : {
       "localizations" : {
         "zh-Hans" : {
@@ -645,6 +655,36 @@
         }
       }
     },
+    "Quick Add" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速添加"
+          }
+        }
+      }
+    },
+    "Quick Add Amounts" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速添加量"
+          }
+        }
+      }
+    },
+    "Quick Adds" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速添加"
+          }
+        }
+      }
+    },
     "Rehydration Solution" : {
       "localizations" : {
         "zh-Hans" : {
@@ -801,6 +841,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "茶"
+          }
+        }
+      }
+    },
+    "These appear above the bottle for one-tap logging. Swipe to delete." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这些会显示在水瓶上方，便于一键记录。左滑删除。"
           }
         }
       }

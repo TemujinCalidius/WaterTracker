@@ -64,6 +64,28 @@ enum LastDrinkTypeStore {
 }
 
 /*
+ * User-customizable quick-fill amounts, shown as preset buttons above the
+ * bottle. Stored as canonical millilitres in the shared app group so the same
+ * presets apply in ml or oz mode. Default 250 / 500 / 1000 ml.
+ */
+enum QuickAddStore {
+    static let storageKey = "YuLiang.SimpleWaterTracker.quickAddAmountsML"
+    static let fallback: [Double] = [250, 500, 1000]
+
+    static func get() -> [Double] {
+        guard let stored = LastDrinkTypeStore.defaults.array(forKey: storageKey) as? [Double],
+              !stored.isEmpty else {
+            return fallback
+        }
+        return stored
+    }
+
+    static func set(_ amountsML: [Double]) {
+        LastDrinkTypeStore.defaults.set(amountsML, forKey: storageKey)
+    }
+}
+
+/*
  * Sections group drinks in the picker. Alcohol is intentionally absent for now
  * (keeps the App Store rating at 4+); adding an `alcohol` case here plus the
  * alcohol drink cases below is a purely additive change.
