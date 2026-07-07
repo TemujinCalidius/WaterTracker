@@ -75,7 +75,6 @@ struct CupView: View {
                                     .frame(width: cupWidth, alignment: .center)
                                     .overlay(
                                         WaveAnimation($waveOffset, true, fillColor: selectedDrinkType.waveColor)
-                                            .animation(.easeInOut(duration: 0.4), value: selectedDrinkType)
                                             .frame(width: cupWidth, alignment: .center)
                                             .aspectRatio( contentMode: .fill)
                                             .mask(
@@ -264,6 +263,11 @@ struct DrinkTypePickerButton: View {
                             } else {
                                 Text(drink.displayName)
                             }
+                            // Hydration factor as a subtitle; goal credit
+                            // stays capped at the poured volume.
+                            if drink.factor != 1.0 {
+                                Text(String(format: "×%.2f", drink.factor))
+                            }
                         }
                     }
                 } header: {
@@ -334,6 +338,11 @@ struct DrinkTypeListPicker: View {
                                     .foregroundStyle(drink.waveColor)
                                 Text(drink.displayName)
                                 Spacer()
+                                if drink.factor != 1.0 {
+                                    Text(String(format: "×%.2f", drink.factor))
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                                 if drink == selectedDrinkType {
                                     Image(systemName: "checkmark")
                                 }
