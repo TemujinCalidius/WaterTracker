@@ -49,6 +49,10 @@ struct WaveWithCupHeight: View {
     // Use for animation and default value scaling.
     @State var cupCapacity: Double = 1000.0
 
+    // The fill level jumps around while the config loads on launch; snap to the
+    // resting level first, then animate only the user's own adjustments.
+    @State private var enableFillAnimation: Bool = false
+
     var body : some View {
         GeometryReader { geometry in
             ZStack {
@@ -74,15 +78,21 @@ struct WaveWithCupHeight: View {
                     }
                     .animation(.linear(duration: 1.7).repeatForever(autoreverses: false), value: waveOffset)
             }
-            .animation(.linear(duration: 0.3), value: self.healthKitManager.drinkNum)
+            .animation(enableFillAnimation ? .linear(duration: 0.3) : nil, value: self.healthKitManager.drinkNum)
             // Clamp the fill fraction so a transient drinkNum > cupCapacity
             // (e.g. before the config finishes loading) can't push the wave
             // above the cup and make the liquid appear to pour in from the top.
             // WaveWithBodyHeight already clamps its offset the same way.
             .offset(x:0, y: geometry.size.height * (1.0 - min(1.0, max(0.0, self.healthKitManager.drinkNum / self.config.cupCapacity))))
             .frame(width: geometry.size.width, height: geometry.size.height)
+            .onAppear {
+                // Let the launch fill settle instantly, then animate later changes.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    enableFillAnimation = true
+                }
+            }
         }
-        
+
     }
 }
 
