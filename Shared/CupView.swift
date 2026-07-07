@@ -185,6 +185,12 @@ struct CupView: View {
                         
                         Spacer()
                         
+#if os(iOS)
+                        // Pick the drink type from a scrollable row of icons.
+                        DrinkTypeIconRow(selectedDrinkType: $selectedDrinkType)
+                            .padding(.bottom, 4)
+#endif
+
                         HStack{
                             Button{
                                 Task {
@@ -244,7 +250,9 @@ struct CupView: View {
                             .scaleEffect(isDrinkButtonExpanded ? 2.5 : 1)
                             .animation(Animation.easeOut(duration: 0.3), value: self.isDrinkButtonExpanded)
 
+#if os(watchOS)
                             DrinkTypePickerButton(selectedDrinkType: $selectedDrinkType)
+#endif
 
                             Spacer()
 
@@ -345,6 +353,60 @@ struct CupView: View {
         .accentColor(.black)
     }
 }
+
+#if os(iOS)
+struct DrinkTypeIconRow: View {
+    /* Horizontal, scrollable row of circular drink-type icons (HidrateSpark
+     * style): symbol on the drink's colour, white ring on the selected one,
+     * name underneath. Scrolls to the current selection on appear. Replaces
+     * the old text menu on iOS. */
+
+    @Binding var selectedDrinkType: DrinkType
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    ForEach(DrinkType.allCases) { drink in
+                        Button {
+                            self.selectedDrinkType = drink
+                            LastDrinkTypeStore.set(drink)
+                        } label: {
+                            VStack(spacing: 4) {
+                                ZStack {
+                                    Circle()
+                                        .fill(drink.waveColor)
+                                    Image(systemName: drink.symbolName)
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 22))
+                                        .shadow(color: .black.opacity(0.25), radius: 1)
+                                }
+                                .frame(width: 52, height: 52)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: drink == selectedDrinkType ? 3 : 0)
+                                )
+                                Text(drink.displayName)
+                                    .font(.caption2)
+                                    .foregroundStyle(.black)
+                                    .lineLimit(1)
+                            }
+                            .frame(width: 66)
+                            .opacity(drink == selectedDrinkType ? 1.0 : 0.6)
+                        }
+                        .buttonStyle(.plain)
+                        .id(drink)
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .onAppear {
+                proxy.scrollTo(selectedDrinkType, anchor: .center)
+            }
+        }
+    }
+}
+#endif
 
 struct DrinkTypePickerButton: View {
     /* Sparing extraction from CupView's bottom HStack (see the FIXME above).
